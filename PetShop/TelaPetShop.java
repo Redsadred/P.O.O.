@@ -189,12 +189,10 @@ public class TelaPetShop extends JFrame {
                     return;
                 }
                 Animal encontrado = repositorio.buscarPorNome(nomeBusca);
-
                 if (encontrado == null) {
                     exibirTexto("Nenhum pet encontrado com o nome: " + nomeBusca);
                     return;
                 }
-
                 String tipo = (String) comboTipo.getSelectedItem();
                 if (tipo.equals("Cachorro") && !(encontrado instanceof Cachorro)) {
                     exibirTexto("Não existe cachorro com esse nome.");
@@ -216,22 +214,38 @@ public class TelaPetShop extends JFrame {
                     exibirTexto("ERRO: Preencha pelo menos um campo para atualizar.");
                     return;
                 }
+                if (!raca.isEmpty() && !raca.matches("[a-zA-ZÀ-ÿ ]+")) {
+                    exibirTexto("ERRO: A raça deve conter apenas letras.");
+                    return;
+                }
+                if (!dono.isEmpty() && !dono.matches("[a-zA-ZÀ-ÿ ]+")) {
+                    exibirTexto("ERRO: O nome do tutor deve conter apenas letras.");
+                    return;
+                }
+                if (!idadeStr.isEmpty()) {
+                    try {
+                        int idade = Integer.parseInt(idadeStr);
+
+                        if (idade < 0) {
+                            exibirTexto("ERRO: A idade não pode ser negativa.");
+                            return;
+                        }
+
+                    } catch (NumberFormatException ex) {
+                        exibirTexto("ERRO: O campo Idade deve ser um número válido.");
+                        return;
+                    }
+                }
                 if (!raca.isEmpty()) {
                     encontrado.setRaca(raca);
                 }
                 if (!idadeStr.isEmpty()) {
-                    try {
-                        encontrado.setIdade(Integer.parseInt(idadeStr));
-                    } catch (NumberFormatException ex) {
-                        exibirTexto("ERRO: Idade inválida.");
-                        return;
-                    }
+                    encontrado.setIdade(Integer.parseInt(idadeStr));
                 }
                 if (!dono.isEmpty()) {
                     if (telefone.isEmpty()) {
                         telefone = "Sem telefone";
                     }
-
                     encontrado.setDono(new Cliente(dono, telefone));
                 }
                 if (!telefone.isEmpty() && encontrado.getDono() != null) {
